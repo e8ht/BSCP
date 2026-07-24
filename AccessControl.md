@@ -114,13 +114,145 @@
 <img width="953" height="790" alt="image" src="https://github.com/user-attachments/assets/cd6ba896-9b8e-42cb-af09-72ab3e2b9a27" />
 
 
+//Lab -- 
+
+- log in with wiener:peter
+- change the value in id param to carlos
+- and lab solved just like that
+
+<img width="696" height="495" alt="image" src="https://github.com/user-attachments/assets/70fe68b8-9f4d-475c-a4bd-9b6c3852b506" />
 
 
 
 
+---
+
+<img width="945" height="129" alt="image" src="https://github.com/user-attachments/assets/3bb32b4b-bc08-4d85-9dac-0bcebfb7e65f" />
+
+
+//Lab -- User ID controlled by request parameter, with unpredictable user IDs 
+
+- browse through lab and comments
+- found carlos guid in the url
+
+  
+<img width="949" height="370" alt="image" src="https://github.com/user-attachments/assets/7f7106e8-cfbc-460e-883e-22371637471e" />
+
+
+- log in with wiener:peter
+- swap in carlos's GUID in the url
+- submit his API key
+
+<img width="1181" height="479" alt="image" src="https://github.com/user-attachments/assets/2799824c-7268-4691-b8f6-01ffb331b657" />
+
+
+---
+
+<img width="956" height="123" alt="image" src="https://github.com/user-attachments/assets/38348c30-1605-4316-958b-2a8f82c44fc0" />
+
+//Lab -- User ID controlled by request parameter with data leakage in redirect 
+
+- log in with wiener:peter
+- swap in 'carlos' in the id param in the url
+- in burp, look at the 302 redirect response -- and we found carlos' API key leaking
+
+<img width="1238" height="273" alt="image" src="https://github.com/user-attachments/assets/2ac906d3-8fe5-43d0-b635-4a1b6beaf92f" />
+
+
+---
+
+
+<img width="954" height="361" alt="image" src="https://github.com/user-attachments/assets/f16bd1d8-aa6d-4293-a884-90c3c82e8cda" />
+
+
+//Lab -- User ID controlled by request parameter with password disclosure
+
+- log in with wiener:peter
+- swap in `administrator` in id param in the url -- we then see a masked password
+- right click and inspect -- and find `i2vvzs9sf8q7rrlxtai8`
+- log in with `administrator : i2vvzs9sf8q7rrlxtai8`
+- delete carlos in admin panel
+
+<img width="940" height="588" alt="image" src="https://github.com/user-attachments/assets/55893025-4ae0-45d5-81fd-2bb574f38a41" />
+
+
+---
+
+
+<img width="963" height="167" alt="image" src="https://github.com/user-attachments/assets/54e48bbd-fa48-4430-8aa5-0f4e770ed8ab" />
+
+//Lab -- IDOR
+
+- go to live chat and chat
+- download transcript and notice we get 2.txt
+- on burp repeater -- change 2.txt to 1.txt and send
+- and found passwd `48wgghkqdq6pyixhgwnx`
+- log in as carlos and lab solved
+
+
+<img width="1247" height="351" alt="image" src="https://github.com/user-attachments/assets/a1f6e6d6-0a40-4195-b449-78db37218f52" />
+
+
+---
+
+
+<img width="953" height="433" alt="image" src="https://github.com/user-attachments/assets/0badbe24-95eb-4c71-9f72-8834e3a88949" />
+
+//Lab -- Multi-step process with no access control on one step
+
+- first log in as administrator and observe the admin panel requests
+- try and upgrade carlos to admin at /admin-roles
+- note that there are the initial and the subsequent confirmation requests
+
+<img width="1249" height="361" alt="image" src="https://github.com/user-attachments/assets/0d1accb2-00b5-4ce8-a530-52c89a1ff5f9" />
+<img width="1071" height="376" alt="image" src="https://github.com/user-attachments/assets/933c0613-2a40-4339-bdb4-207100fe274a" />
+
+- log out then log back in as wiener -- copy our session cookie
+- swap in our session cookie at the subsequent confirmation request /admin-roles from earlier
+- and also change the username param to wiener
+
+<img width="989" height="388" alt="image" src="https://github.com/user-attachments/assets/96eea3a8-4759-4c89-a927-5f97d2317c6f" />
+
+
+- follow redirection and lab solved
+<img width="1248" height="345" alt="image" src="https://github.com/user-attachments/assets/78ff284e-895c-4efa-a4f6-e6adf6353c39" />
 
 
 
+---
+
+<img width="958" height="263" alt="image" src="https://github.com/user-attachments/assets/7df9375a-a5b7-44ce-a3d3-e64211cf2990" />
+
+
+//Lab -- Referer based access control
+
+- log in as administrator and observe the admin panel at /admin-roles
+- try and upgrade carlos -- note that it's a GET request
+- also note that the referer header is from /admin
+
+<img width="917" height="289" alt="image" src="https://github.com/user-attachments/assets/8c30b098-6cc5-4e2d-8ea6-60002beb3b0d" />
+
+
+- log out and log back in as wiener
+- grab our session cookie
+
+<img width="1241" height="294" alt="image" src="https://github.com/user-attachments/assets/0f0c9887-8d05-4f61-8731-b1546e2fd160" />
+
+- on /admin-roles from earlier where the referer header is /admin used for upgrading carlos -- we swap in our session cookie
+- and change the username param to wiener
+
+<img width="945" height="297" alt="image" src="https://github.com/user-attachments/assets/bb1e2c12-319b-405d-a862-ff9c849b1d2a" />
+
+
+- send it and lab solved
+
+<img width="1248" height="341" alt="image" src="https://github.com/user-attachments/assets/5c49e1db-eb2b-4acb-ac8e-fcac1213cf4e" />
+
+
+---
+
+
+<img width="937" height="431" alt="image" src="https://github.com/user-attachments/assets/d0843417-0430-45ff-a576-bbda5d338c55" />
 
 
 
