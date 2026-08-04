@@ -124,23 +124,38 @@
 ---
 
 
+<img width="629" height="387" alt="image" src="https://github.com/user-attachments/assets/14c49ee2-9f1a-4ccf-856b-8d624807505a" />
+
+//LAB -- 
+
+- follow the steps above
+- first try `'`
+- there's 500 error -- so add `-- -`
+- we get 200 OK so the comment fixes it -- confirming we can control this param
+
+---
+
+- now try union injection `'union select null,null-- -` with 2 null params -- and get 200OK
+
+<img width="1118" height="337" alt="image" src="https://github.com/user-attachments/assets/f79a4a5c-ee6d-4299-8ccb-83d72d126292" />
+
+- then with 3 param -- we get 500 error
+- so there's 2 params
+
+<img width="1122" height="339" alt="image" src="https://github.com/user-attachments/assets/fda7b23e-dcf7-4401-9295-24be2b66d36d" />
+
+- now grab `username` and `password` values from `user` table
+
+<img width="1121" height="478" alt="image" src="https://github.com/user-attachments/assets/50c416aa-a510-45f1-8e17-1a3aa71aefc1" />
 
 
 
+- log in with `administrator : cfwcs2k0gsxh503727rz`
+- finally lab solved
 
+<img width="1177" height="439" alt="image" src="https://github.com/user-attachments/assets/90f3fa7e-5b9f-4584-a8cd-57eb0e112612" />
 
-
-
-
-
-
-
-
-
-
-
-
-
+---
 
 
 
