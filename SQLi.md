@@ -60,7 +60,7 @@
 
 ---
 
-//LAB --
+//LAB -- SQL injection UNION attack, determining the number of columns returned by the query
 
 - 200 OK for valid param value
 
@@ -84,6 +84,44 @@
 <img width="1126" height="414" alt="image" src="https://github.com/user-attachments/assets/4fae7717-f9a9-47ec-82ca-ebe788f99cb5" />
 
 
+---
+
+//LAB -- SQL injection UNION attack, finding a column containing text
+
+
+<img width="641" height="671" alt="image" src="https://github.com/user-attachments/assets/18ec5160-fa14-490a-908a-8f7ab07c172b" />
+
+
+//page loaded normally
+
+<img width="1114" height="457" alt="image" src="https://github.com/user-attachments/assets/c3e2bf87-dfa1-43ee-8606-69470b898417" />
+
+- `'` causes a 500 error -- indicative of sqli
+
+<img width="1119" height="486" alt="image" src="https://github.com/user-attachments/assets/181d6e4d-902a-4676-bc7d-ee9a175215b8" />
+
+
+- the comment `--+-` fixes it
+
+<img width="1115" height="557" alt="image" src="https://github.com/user-attachments/assets/4d2654a3-2f2f-4de2-a380-832726c61894" />
+
+- try the `union select null` trick
+- 3 params causes no error
+
+<img width="1122" height="667" alt="image" src="https://github.com/user-attachments/assets/1eab8fe1-c65b-455d-9ca9-51190406a466" />
+
+- 4 params causes 500 server error
+- so there's 3 params
+
+<img width="1117" height="499" alt="image" src="https://github.com/user-attachments/assets/64c3fe2d-a0f3-4807-8c17-19cdf6e5f5e2" />
+
+- now type in the requested string
+- try first param and it didnt work
+- the second one does -- and finally lab solved
+
+<img width="1120" height="457" alt="image" src="https://github.com/user-attachments/assets/b7b3c403-7eb2-4919-aa19-18ecd48aea36" />
+
+---
 
 
 
