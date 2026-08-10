@@ -293,6 +293,14 @@
 ---
 
 
+## BLIND SQLi
+
+---
+
+
+<img width="630" height="379" alt="image" src="https://github.com/user-attachments/assets/9fa3a3f8-e6dc-4644-adb0-18df5ddd3005" />
+
+---
 
 
 
