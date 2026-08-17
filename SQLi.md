@@ -302,11 +302,38 @@
 
 ---
 
+<img width="559" height="662" alt="image" src="https://github.com/user-attachments/assets/dbf11d6e-b11b-4027-b4d1-0bb916ec471b" />
 
 
+<img width="543" height="512" alt="image" src="https://github.com/user-attachments/assets/f7ede7b7-0919-47de-ae41-ebd299db78bc" />
 
 
+//LAB: Blind SQL injection with conditional responses
 
+- in injecting with `'` in `filter` and `session` params but don't work
+- then try session`trackingId` param with `'` then commenting out with `--+-` and we get different content-length
+- observe and found there's a welcome message in the `true` condition where content length of
+- 3738 is false
+- 3799 is true
+  
+<img width="1247" height="298" alt="image" src="https://github.com/user-attachments/assets/352c8f1a-319a-47f7-bb14-a7c55d0702f3" />
+
+<img width="1248" height="280" alt="image" src="https://github.com/user-attachments/assets/b6816217-4f65-4e84-8c6c-c8a0ec30cab7" />
+
+
+- then in intruder -- try injecting with `' and substring((select password from users where username = 'administrator'),1,1) = s-- -`
+- could do `sniper` with one ascii alphanumeric payload `a-z0-9`
+- and change the offset at `substring((),<1>,1)` for each character
+
+<img width="1548" height="394" alt="image" src="https://github.com/user-attachments/assets/936f6808-246f-4f1d-8c23-434f8e11b367" />
+
+
+- or do cluster bomb and set 2 payloads -- one for ascii alphanumeric a-z0-9 and another just plain number 1-25 for offset
+- and finally got `v7fujirlhf759hovp17t`
+- log in with `administrator : v7fujirlhf759hovp17t` -- and lab solved
+
+
+<img width="937" height="385" alt="image" src="https://github.com/user-attachments/assets/27c2fbbd-baa0-4665-9c41-9291d0c007dc" />
 
 
 
