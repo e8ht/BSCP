@@ -553,7 +553,7 @@
 
 
 - now try union injection with payload `union select null`
-- note that we're not using `'`
+- note that we're not using `'` -- because the backend likely expects an integer -- meaning we don't need to add a single quote `'` to break the query
 - but got blocked by WAF
 
 <img width="1011" height="473" alt="image" src="https://github.com/user-attachments/assets/3f45eb38-b6ba-4921-b794-8dd01813e5bb" />
