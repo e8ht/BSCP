@@ -447,7 +447,7 @@
 
 
 
-- try different time-based payloads
+- try different time-based payloads in `https://portswigger.net/web-security/sql-injection/cheat-sheet`
 
 <img width="1247" height="339" alt="image" src="https://github.com/user-attachments/assets/5621f451-313b-4a39-8d7d-a547bfd9b0a1" />
 
@@ -481,7 +481,7 @@
 <img width="1247" height="303" alt="image" src="https://github.com/user-attachments/assets/be9058d2-30da-4230-b506-c3e94871855b" />
 
 
-- now try different conditional time-based payloads
+- now try different conditional time-based payloads in `https://portswigger.net/web-security/sql-injection/cheat-sheet`
 - eventually this one works -- `'%3b select case when (1=1) then pg_sleep(5) else pg_sleep(0) end-- -`
 - note that adding `||` wouldn't work -- and we actually need `;`
 
@@ -525,7 +525,59 @@
 
 ---
 
--- NEED BURP PRO FOR BURP COLLAB TO COMPLETE THE 2 REMAINING LABS --
+-- NEED BURP PRO FOR BURP COLLAB TO COMPLETE THE 2 REMAINING BLIND SQLi LABS --
+
+
+--- 
+
+
+<img width="561" height="531" alt="image" src="https://github.com/user-attachments/assets/98dee4f8-96b7-4324-a9ec-5f1914b3d379" />
+
+
+<img width="564" height="534" alt="image" src="https://github.com/user-attachments/assets/683a5a65-c15c-44b7-9f09-5febeb68df62" />
+
+
+<img width="738" height="429" alt="image" src="https://github.com/user-attachments/assets/f2f9500e-02fd-4246-9583-9b327e5ce3d8" />
+
+
+
+//LAB:
+
+- stock check API has request body in XML
+- in storeId param try adding `+2` and the stock value change -- to another store's stock quantity
+- meaning it gets evaled
+
+<img width="1029" height="483" alt="image" src="https://github.com/user-attachments/assets/6b21b643-583c-4be2-a457-7e451b7117fa" />
+
+<img width="999" height="483" alt="image" src="https://github.com/user-attachments/assets/d05922d6-d1c3-4a92-bced-5f1aa66e703b" />
+
+
+- now try union injection with payload `union select null`
+- note that we're not using `'`
+- but got blocked by WAF
+
+<img width="1011" height="473" alt="image" src="https://github.com/user-attachments/assets/3f45eb38-b6ba-4921-b794-8dd01813e5bb" />
+
+- now highlight our payload --> right click --> extensions --> hackvertor --> encoding
+- try different encoding schemes
+- eventually the dec_entities works
+
+<img width="1020" height="506" alt="image" src="https://github.com/user-attachments/assets/90186e1e-d3d6-4dda-8cf8-501968e4d92f" />
+
+
+- try different payloads but we got nothing returned
+- finally got the creds with `union select username || ':' || password from users`
+- note that we're not using `'` or comment `-- -`
+
+<img width="969" height="506" alt="image" src="https://github.com/user-attachments/assets/dd359cba-f52e-4e6d-b836-ba3c2c1ef45a" />
+
+
+- log in with `administrator : mzymxnqdefw33lv308ph`
+- and lab solved
+
+<img width="957" height="365" alt="image" src="https://github.com/user-attachments/assets/f3c24e07-efd8-4cbd-984f-75ff9ea8e3d2" />
+
+
 
 
 
