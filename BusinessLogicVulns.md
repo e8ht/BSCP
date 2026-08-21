@@ -39,6 +39,64 @@
 
 
 
+---
+
+
+<img width="650" height="622" alt="image" src="https://github.com/user-attachments/assets/846c1d3e-f111-4a53-8b3f-f0f84b9353b5" />
+
+
+<img width="657" height="451" alt="image" src="https://github.com/user-attachments/assets/bfdfddb1-ed94-4608-8351-f3140f7708a1" />
+
+
+//LAB:
+
+
+- try and inject into quantity param
+- and apparently we can successfully add a negative quantity
+
+<img width="974" height="398" alt="image" src="https://github.com/user-attachments/assets/c6045f25-62ae-44dd-bff3-670a1e7b5c75" />
+
+- however to successfully place an order -- the total price has to be positive -- above 0
+
+<img width="950" height="602" alt="image" src="https://github.com/user-attachments/assets/62676259-45c9-4fbc-b95a-3c2cdd90313a" />
+
+
+
+
+- go ahead and add one 1337 leet jacket to our cart
+- the total price is now $1337
+
+<img width="992" height="413" alt="image" src="https://github.com/user-attachments/assets/f15d2118-67ad-4dcd-a372-4ecc8a958e1d" />
+
+
+
+
+- now change the productId to another
+- and make sure it's a negative value
+- to subtract out the the leet jacket $1337 price -- to under $100 which is our store credit
+
+<img width="960" height="398" alt="image" src="https://github.com/user-attachments/assets/341f75a5-586d-4412-8122-ebe313bd0604" />
+
+
+
+
+
+<img width="934" height="647" alt="image" src="https://github.com/user-attachments/assets/09394cb9-1bcc-41ea-9c72-b752bcab5177" />
+
+- and lab solved
+
+<img width="947" height="417" alt="image" src="https://github.com/user-attachments/assets/d18b66cf-4e1b-4fc8-b37e-32220d6e04a9" />
+
+
+
+
+
+
+
+
+
+
+
 
 
 
