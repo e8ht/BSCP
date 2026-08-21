@@ -19,7 +19,7 @@
 
 <img width="661" height="272" alt="image" src="https://github.com/user-attachments/assets/de93d256-1fe8-40d3-8396-fcb8afe59c29" />
 
-//LAB: Excessive trust in client-side controls
+#### //LAB: Excessive trust in client-side controls
 
 - log in with `wiener : peter`
 - add product to cart
@@ -48,7 +48,7 @@
 <img width="657" height="451" alt="image" src="https://github.com/user-attachments/assets/bfdfddb1-ed94-4608-8351-f3140f7708a1" />
 
 
-//LAB:
+#### //LAB:
 
 
 - try and inject into quantity param
@@ -88,20 +88,54 @@
 <img width="947" height="417" alt="image" src="https://github.com/user-attachments/assets/d18b66cf-4e1b-4fc8-b37e-32220d6e04a9" />
 
 
+**LESSON LEARNED -- gotta be smart about it
 
 
+---
+
+#### //LAB: Low-level Logic Flaw
 
 
+- in repeater POST request /cart -- found that we may be able to manipulate `quantity` param
+- play around on repeater for awhile and found that we cannot add more than 2 digits at a time
+- so 99 is the max value
+
+<img width="1136" height="426" alt="image" src="https://github.com/user-attachments/assets/cf0ffaf5-73a1-4fe2-9498-95accbd63ea6" />
 
 
+- via intruder -- found out that we could get the amount to loop back after max integer value of `2147,483,647`
+
+<img width="930" height="591" alt="image" src="https://github.com/user-attachments/assets/3f784bd6-ae4a-45e4-aff9-f1b845880466" />
 
 
+- so now after some calculations -- we need to send 323 payloads of 99
+- set payload to Null
+- generate 323 payloads
+- in resource pool -- set maximum concurrent requests to 1
+- then start attack
+
+<img width="1562" height="460" alt="image" src="https://github.com/user-attachments/assets/ad7666fe-5b7b-4b75-898e-6055ec9d88aa" />
 
 
+- wait awhile for it to complete
+
+<img width="1082" height="332" alt="image" src="https://github.com/user-attachments/assets/94374a92-9b15-4ecc-a0a6-0df505b3d2da" />
 
 
+- now then add 47 to quantity param to get the amount down to -1221.96
+
+<img width="1020" height="408" alt="image" src="https://github.com/user-attachments/assets/53219eec-cb79-43d0-9b21-1e68c70c4966" />
 
 
+- now add other products to get the total amount between $1 to $100
+
+<img width="891" height="624" alt="image" src="https://github.com/user-attachments/assets/52019fd6-2dab-4624-ab49-83c4203ac10f" />
+
+
+- place order
+- and finally lab solved
+
+<img width="943" height="442" alt="image" src="https://github.com/user-attachments/assets/e07e95a3-6188-4c38-be53-c790f64f267b" />
 
 
 
