@@ -356,6 +356,187 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
 
 
+<img width="655" height="352" alt="image" src="https://github.com/user-attachments/assets/a9340328-b7f0-45f2-a64d-5947a273e87e" />
+
+
+#### //LAB: Insufficient workflow validation
+
+
+
+- first play around with the site
+- add `itemID 2` to the cart and place order
+
+<img width="1072" height="397" alt="image" src="https://github.com/user-attachments/assets/3e1ed0cc-16ed-4c06-ad9b-79cd795fee76" />
+
+
+- order went through
+- notice that once order is placed -- we get an order confirmation page GET request `/cart/order-confirmation?order-confirmed=true`
+
+
+<img width="1245" height="312" alt="image" src="https://github.com/user-attachments/assets/d314f539-6f11-45c4-accc-ff555e743d0b" />
+
+
+
+- add l33t jacket to the cart
+- note the session cookie
+
+<img width="984" height="649" alt="image" src="https://github.com/user-attachments/assets/bfaa8f28-22ea-4c11-8a11-8eb19a65c53c" />
+
+<img width="936" height="493" alt="image" src="https://github.com/user-attachments/assets/3eb148fb-c223-4d7e-b0cb-301946ed3952" />
+
+
+
+- now that we have the l33t jacket in the cart
+- the session cookie in the browser matches one in burp from earlier
+- try and send the order-confirmation request `GET /cart/order-confirmation?order-confirmed=true`
+
+<img width="1250" height="308" alt="image" src="https://github.com/user-attachments/assets/84783ca0-c8e8-4062-a9cc-65b1d53ebc17" />
+
+
+
+- apparently the order went through
+- and lab solved
+
+<img width="998" height="420" alt="image" src="https://github.com/user-attachments/assets/bf22d453-790f-4f5e-9e3c-739a7a94b6ab" />
+
+
+
+
+---
+
+#### //LAB: Auth bypass via flawed state machine
+
+
+
+
+- try and log in with `wiener : peter` normally
+- notice we're redirected to `/role-selector` endpoint after providing creds to log in at `POST /login`
+
+<img width="1244" height="369" alt="image" src="https://github.com/user-attachments/assets/a19d4698-f828-432e-a6ba-8170b029e38a" />
+
+
+- try and navigate to `/admin`
+- not accessible -- but exists
+- log out
+- turn intercept on in burp
+- log back in with `wiener : peter`
+- forward the `POST /login`
+- now then drop the `GET /role-selector` on burp
+
+- <img width="1012" height="289" alt="image" src="https://github.com/user-attachments/assets/ca2b5646-26cd-4c4c-9353-65bdadefdab8" />
+
+
+
+- now then if we navigate to `/admin` -- we're admin!
+- we've bypassed auth to get admin access
+- likely due to `default admin role assignment` not being overwritten by `/role-selector`
+
+<img width="1320" height="409" alt="image" src="https://github.com/user-attachments/assets/70013555-161f-443a-9ded-0d7c8fc46caa" />
+
+
+
+- delete carlos and lab solved
+
+<img width="1297" height="491" alt="image" src="https://github.com/user-attachments/assets/3cdb5b1b-8ab4-4d06-8f92-061ceb2776a6" />
+
+
+
+---
+
+
+<img width="655" height="696" alt="image" src="https://github.com/user-attachments/assets/0b69d17d-bc27-4d37-a912-4c9092653b3e" />
+
+
+
+#### //LAB: Domain-Specific Flaws
+
+
+- so apparently there are 2 coupons
+- one at the top of the page -- `NEWCUST5`
+- the other is at the bottom after we sign up for a newsletter -- `SIGNUP30`
+- apply both coupons
+
+<img width="1219" height="896" alt="image" src="https://github.com/user-attachments/assets/39fb9862-5664-491a-9b68-3c83420f2e83" />
+
+
+
+- try and apply the same coupon twice in a row would fail
+
+<img width="1139" height="383" alt="image" src="https://github.com/user-attachments/assets/133f9a02-2e76-4b71-9e68-dfdf984fe86c" />
+
+
+
+- applying the two coupons alternatively works
+
+<img width="1251" height="374" alt="image" src="https://github.com/user-attachments/assets/e1f3dad5-1fe3-4468-a7e2-315f15f6390d" />
+
+<img width="1251" height="383" alt="image" src="https://github.com/user-attachments/assets/61a4e2c1-c9e3-4fab-9fca-696dfeae7838" />
+
+<img width="1088" height="907" alt="image" src="https://github.com/user-attachments/assets/1b620614-5c55-4442-b480-5adc0035e77f" />
+
+
+
+
+- and lab solved
+
+<img width="1095" height="690" alt="image" src="https://github.com/user-attachments/assets/ad444665-0758-46e5-a541-c1b6dcfb4d5c" />
+
+LESSONS LEARNED: -- gotta be creative about it
+
+
+---
+
+#### //LAB:
+
+
+
+- sign up for a nesletter and get a coupon code -- `SIGNUP30`
+- there's a $10 gift card available for purchase
+
+
+<img width="1142" height="731" alt="image" src="https://github.com/user-attachments/assets/84e1bc9b-a44e-421d-b35d-d2581fa4bf6c" />
+
+
+
+
+MACRO
+
+
+
+
+
+
+
+
+- send `my-account` to intruder
+- sniper attack
+- 412 null payloads (* $3) to get $1236 + existing $103 == $1339 total -- just enough to purchase the l33t jacket
+- in resource pool -- set maximum concurrent request to be `1`
+
+<img width="1552" height="386" alt="image" src="https://github.com/user-attachments/assets/9ba7785d-3dc4-46f8-9ac0-13fdb80eb8c4" />
+
+
+
+
+
+
+- finally we got enough credits
+
+<img width="1143" height="522" alt="image" src="https://github.com/user-attachments/assets/7b5469d2-a207-4f48-9533-2a9e63da8eb8" />
+
+<img width="1060" height="648" alt="image" src="https://github.com/user-attachments/assets/2c969fbe-7c30-4acf-a902-11ed435d38c9" />
+
+
+- finally lab solved
+
+<img width="1090" height="411" alt="image" src="https://github.com/user-attachments/assets/49c834f5-4744-411f-95be-01da221bf13a" />
+
+
+
+
+
+
+
 
 
 
