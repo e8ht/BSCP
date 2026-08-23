@@ -37,6 +37,55 @@
 <img width="1019" height="433" alt="image" src="https://github.com/user-attachments/assets/96d712fe-7bc6-4419-bfe0-bfb44254d094" />
 
 
+---
+
+#### //LAB: 2FA Broken Logic
+
+
+
+- got in our account
+
+<img width="988" height="505" alt="image" src="https://github.com/user-attachments/assets/a4eabd1b-d4d2-4464-b633-b8b8d582b763" />
+
+
+
+- observe from earlier that the GET request for /login2 may be injectable
+- in the `verify` param
+
+<img width="1248" height="314" alt="image" src="https://github.com/user-attachments/assets/123c54dd-25a7-41df-bd7b-0508d0110118" />
+
+
+- so go ahead and try using user carlos instead
+- if successful an OTP should have been issued for carlos
+
+<img width="1248" height="455" alt="image" src="https://github.com/user-attachments/assets/1ff8f476-0e0e-4a09-bca5-b1a620105750" />
+
+
+- now here is the POST request for `/login2` from earlier for wiener user
+- where we provide the OTP
+
+<img width="1240" height="384" alt="image" src="https://github.com/user-attachments/assets/d1f38204-4a3f-4f1d-950f-2c7d99fdc9dc" />
+
+
+- send it to intruder
+- `sniper` attack
+- `numbers` payload
+- `0000` to `9999`
+- min and max integer digits `4`
+
+<img width="1558" height="479" alt="image" src="https://github.com/user-attachments/assets/1847b35d-00d5-44e4-a951-97ea69d4a276" />
+
+
+
+- finally we got it -- `0387`
+- key it in to access carlos account page and lab solved
+
+<img width="1146" height="572" alt="image" src="https://github.com/user-attachments/assets/9ba9fe9d-7c61-4f4a-aac1-ef6e09b41ff5" />
+
+
+
+
+
 
 
 ---
@@ -137,6 +186,173 @@
 
 <img width="943" height="442" alt="image" src="https://github.com/user-attachments/assets/e07e95a3-6188-4c38-be53-c790f64f267b" />
 
+
+---
+#### //LAB: Inconsistent handling of exceptional input
+
+
+- first create a normal account -- then we got an email for account activation
+- click the link to activate the account and we got a normal account
+- next try and add a bunch of chars as username and create another account
+- got the email to activate -- then again click the link to complete registration
+
+<img width="1020" height="616" alt="image" src="https://github.com/user-attachments/assets/10270eae-c4d9-429b-b4d6-66c189fe6bf6" />
+
+
+- log in to our account with the creds we just registered earlier
+- notice that the email is truncated to 255 chars
+
+<img width="1062" height="434" alt="image" src="https://github.com/user-attachments/assets/0a91f225-6b93-4590-b8e0-368b80587cca" />
+
+- now we need to craft an email payload to fit exactly 255 chars
+- gotta include `@dontwannacry.com` -- which is 17 chars
+- so we need 238 chars username
+- whip it up with python -- `python3 -c 'print("a"*238)'`
+
+<img width="1233" height="75" alt="image" src="https://github.com/user-attachments/assets/11261bc5-558a-4f2e-93c1-084079c878c6" />
+
+- now we got
+```
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@dontwannacry.com.exploit-0ac9009a03335dac8127ba83016c00ba.exploit-server.net
+```
+
+- it should get truncated to 255 chars to just -- `aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@dontwannacry.com`
+- note that we need the `.` after `.com` to signify that `@dontwannacry.com` is a subdomain
+- and we got an email confirmation to activate our new account
+
+
+<img width="990" height="623" alt="image" src="https://github.com/user-attachments/assets/caeb8cb2-e2e9-4e8d-a4ec-53eb52942136" />
+
+
+- got in as `test3` user
+- notice there's an admin panel
+
+<img width="946" height="407" alt="image" src="https://github.com/user-attachments/assets/58b690fa-3356-4722-9066-b381204656b8" />
+
+
+
+- we're in admin panel
+- here we can delete user carlos
+- and lab solved
+
+<img width="945" height="358" alt="image" src="https://github.com/user-attachments/assets/ec83fb6b-f922-472c-b06a-34cc6be0823f" />
+
+<img width="953" height="415" alt="image" src="https://github.com/user-attachments/assets/05a87477-923c-4680-9f52-7b89cd1eb4c9" />
+
+
+
+---
+
+
+<img width="655" height="341" alt="image" src="https://github.com/user-attachments/assets/8353ee0a-758a-40aa-8427-b8ae99b80695" />
+
+
+#### //LAB: Inconsistent security controls
+
+
+
+- try and register a new account
+- notice that users with email registered to `@dontwannacry.com` domain -- should have priv access
+
+
+<img width="1046" height="478" alt="image" src="https://github.com/user-attachments/assets/15bd0940-63be-4d72-ac82-3d5b5f4af0e2" />
+
+
+
+- try and change our email to test@dontwannacry.com
+- and its a success
+
+<img width="997" height="487" alt="image" src="https://github.com/user-attachments/assets/5dbeb979-22d6-4fea-90a7-9c98cce86b26" />
+
+
+- in admin panel we can delete user carlos
+
+<img width="1040" height="394" alt="image" src="https://github.com/user-attachments/assets/f91c1e60-35b3-4c56-8dca-c57c5be15004" />
+
+
+- go ahead and delete carlos
+- and lab solved
+
+<img width="994" height="452" alt="image" src="https://github.com/user-attachments/assets/0558b25a-e77b-49ec-9616-b8132335e3cb" />
+
+
+
+---
+
+<img width="663" height="423" alt="image" src="https://github.com/user-attachments/assets/42539d0e-ad2d-4271-882c-19c6685b281f" />
+
+
+#### //LAB: Weak isolation on dual-use endpoint
+
+
+
+- attempt to change username to `administrator`
+- but it says current password is incorrect
+
+
+<img width="1250" height="414" alt="image" src="https://github.com/user-attachments/assets/8112455c-2a22-4e38-b4d3-cbd06369ed6b" />
+
+
+
+- try and remove the `current-password` param altogether
+- and it appears to be successful -- the password for administrator user should already be changed to `peter`
+
+<img width="1261" height="481" alt="image" src="https://github.com/user-attachments/assets/bd290424-a638-4306-ac90-16a7118acd33" />
+
+
+
+
+- try and log in with `administrator : peter`
+- and we got in
+
+
+<img width="938" height="644" alt="image" src="https://github.com/user-attachments/assets/6765bee1-45bd-41a0-8a15-00228c8939d8" />
+
+
+- in admin panel we could delete carlos
+
+
+<img width="945" height="330" alt="image" src="https://github.com/user-attachments/assets/1ae15eba-b6e7-45e7-b849-5d3016f853ac" />
+
+
+- and lab solved
+
+<img width="938" height="392" alt="image" src="https://github.com/user-attachments/assets/d148c79d-1a25-4ab9-b4eb-2c6452bb8a14" />
+
+
+---
+
+
+<img width="667" height="229" alt="image" src="https://github.com/user-attachments/assets/cb2ab7ac-86fa-4a63-a175-562ec41d69d9" />
+
+
+
+
+#### //LAB: 2FA Simple Bypass
+
+
+
+- first log in with `wiener : peter`
+- grab the 2fa code from the email client
+- then we got in our account
+
+<img width="933" height="433" alt="image" src="https://github.com/user-attachments/assets/d08d8c12-e135-4307-addf-d24947bb0de4" />
+
+
+- now log out and log back in with `carlos : montoya`
+
+- prompted with 2fa code -- try and simply change the uri in the browser to `/my-account` in an attempt to bypass
+
+<img width="935" height="322" alt="image" src="https://github.com/user-attachments/assets/08f2c30f-4686-4e63-bbf1-0e33a92d8d47" />
+
+
+- and lab solved just like that
+
+<img width="904" height="426" alt="image" src="https://github.com/user-attachments/assets/5ecb9562-2e10-4663-ba37-27bbfb28b8a2" />
+
+
+
+---
 
 
 
