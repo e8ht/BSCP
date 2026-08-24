@@ -486,7 +486,7 @@ LESSONS LEARNED: -- gotta be creative about it
 
 ---
 
-#### //LAB:
+#### //LAB: Infinite money logic flaw
 
 
 - check the features of the site
@@ -548,7 +548,7 @@ LESSONS LEARNED: -- gotta be creative about it
 
 
 
-- finally we got enough credits
+- wait a good while and finally we got enough credits
 
 <img width="1143" height="522" alt="image" src="https://github.com/user-attachments/assets/7b5469d2-a207-4f48-9533-2a9e63da8eb8" />
 
@@ -566,11 +566,107 @@ LESSONS LEARNED: -- gotta be creative about it
 ---
 
 
+<img width="657" height="344" alt="image" src="https://github.com/user-attachments/assets/2589a861-ad19-42b3-9509-c12cf1505db7" />
+
+
+#### //LAB: Auth bypass via encryption oracle
+
+
+
+
+- log in with `wiener : peter`
+- try and post a comment
+- notice there's an error displayed on the page -- ` Invalid email address: test3.org ` -- if email format is wrong
+
+<img width="1222" height="346" alt="image" src="https://github.com/user-attachments/assets/5d2947f1-0aa7-436f-85c7-e5b54302017c" />
+
+
+- on burp this is the request to post the comment
+- notice the set-cookie cookie
+
+<img width="1250" height="416" alt="image" src="https://github.com/user-attachments/assets/12cfe258-c788-4789-b570-dc048dec2e27" />
+
+
+- and here is the subsequent GET request `/post`
+- observe that the notification cookie is likely the `Invalid email address: test` error message we get in the response
+
+<img width="1249" height="331" alt="image" src="https://github.com/user-attachments/assets/a5b5ab2d-3d71-4834-a656-c5ae883ae126" />
+
+
+- this means that we can use the POST `/post/comment` request email param to encrypt cookies
+- and we can use the subsequent GET `/post` request to decrypt cookies
+- so here we try and use the GET request to decrypt our cookie -- and we got it
+
+<img width="1248" height="322" alt="image" src="https://github.com/user-attachments/assets/62273ad2-5fa3-416c-b185-b8be766ea9b3" />
+
+
+
+- and then naturally we try to forge administrator's cookie
+- by encrypting it with the POST `/post/comment`
+
+<img width="1249" height="411" alt="image" src="https://github.com/user-attachments/assets/b9b99b1e-dbb1-43d8-a8c3-cae51c0076e6" />
+
+
+
+
+- google and found that it's a blocked-based encryption algo
+- input length has to be in multiple of 16 -- so we need to pad `Invalid email address` with enough bytes
+- so add 9 chars just before our cookie payload `888888888administrator:1787589492591`
+- decrypt it and it seems to work
+
+<img width="1250" height="338" alt="image" src="https://github.com/user-attachments/assets/13fcee0b-a662-4621-b1de-f3e1cc58ab1d" />
+
+
+
+- now we have to somehow get rid of the `invalid email address`
+- we url-decode, base64 decode, then remove the first 32 bytes of the cookie
+
+<img width="1552" height="435" alt="image" src="https://github.com/user-attachments/assets/47b79e54-981d-4409-b794-888963fcf7b8" />
+
+<img width="1558" height="360" alt="image" src="https://github.com/user-attachments/assets/d433b797-dd7c-4e8e-bce4-f49afbc6006f" />
+
+
+
+
+- once we apply changes -- we get a newly forged cookie
+
+<img width="1558" height="357" alt="image" src="https://github.com/user-attachments/assets/9a0659b6-b18f-4b39-ac7c-5e5edb5490c6" />
+
+
+
+
+- now try and decrypt our new forged cookie this time and looks like we got it
+
+<img width="1245" height="321" alt="image" src="https://github.com/user-attachments/assets/defaa49e-9be6-454c-a53e-00b273c028c4" />
 
 
 
 
 
+- swap in our forged cookie and remove session cookie param at `/`
+
+<img width="1250" height="327" alt="image" src="https://github.com/user-attachments/assets/5d2d8755-cc46-48ff-92c0-a116c187441f" />
+
+
+
+
+- access `/admin`
+
+<img width="1252" height="571" alt="image" src="https://github.com/user-attachments/assets/cf67ac9b-b204-4ba8-98b3-eeed573692de" />
+
+
+
+- go ahead and delete carlos user
+
+<img width="1247" height="319" alt="image" src="https://github.com/user-attachments/assets/95c1458c-09ca-4b5e-975b-7ada5147b7d6" />
+
+
+
+- and lab solved
+
+<img width="1243" height="337" alt="image" src="https://github.com/user-attachments/assets/6889fe86-14b4-40cf-aa30-281b801160fe" />
+
+<img width="1188" height="344" alt="image" src="https://github.com/user-attachments/assets/cd45a9fc-d5bb-4939-814a-1fd55e9525f2" />
 
 
 
