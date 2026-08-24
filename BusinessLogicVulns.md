@@ -489,33 +489,61 @@ LESSONS LEARNED: -- gotta be creative about it
 #### //LAB:
 
 
-
-- sign up for a nesletter and get a coupon code -- `SIGNUP30`
-- there's a $10 gift card available for purchase
-
+- check the features of the site
+- at the bottom -- sign up for a newsletter and get a coupon code -- `SIGNUP30`
+- there's a $10 gift card available for purchase -- add it to cart
+- place the order and we'd have $93 store credit left
+- then redeem the gift card -- and we'd have $103
+- so the plan is to see if we can rinse and repeat this money glitch
 
 <img width="1142" height="731" alt="image" src="https://github.com/user-attachments/assets/84e1bc9b-a44e-421d-b35d-d2581fa4bf6c" />
 
+- it's likely best to use Burp Macro to tackle this
+- Settings --> sessions --> add new session handling rules `gift card abuse`
+
+<img width="1168" height="347" alt="image" src="https://github.com/user-attachments/assets/7b6b0d6c-dd59-4f22-9703-bfd010dada41" />
+
+- under scope, include all urls
+
+<img width="960" height="414" alt="image" src="https://github.com/user-attachments/assets/be723248-96a8-4f03-9580-88f9dd88813f" />
+
+- back to details --> add `run a macro` --> add again to open macro recorder
+- select the following 5 requests:
+    1. `POST /cart`
+    2. `POST /cart/coupon`
+    3. `POST /cart/checkout`
+    4. `GET /cart/order-confirmation`
+    5. `POST /gift-card`
+- select `/cart/order-confirmation` --> configure item
+
+<img width="1071" height="600" alt="image" src="https://github.com/user-attachments/assets/9bdbc9a6-e159-454f-b67d-7aa0dce7eea6" />
 
 
 
-MACRO
+- add custom param --> name it `gift-card` --> highlight the giftcard code
+
+<img width="679" height="647" alt="image" src="https://github.com/user-attachments/assets/4fca7eea-25fc-4774-a59c-67a448f8d8bc" />
 
 
+<img width="1064" height="839" alt="image" src="https://github.com/user-attachments/assets/7b05154e-4e1a-4c68-8311-f09953aba468" />
+ 
 
+- now select `/gift-card`
 
+<img width="1072" height="598" alt="image" src="https://github.com/user-attachments/assets/e36bc474-7843-42d1-9d2f-cd34eb142f75" />
 
+- configure item --> under parameter handling `gift-card`, select derived from prior response -- response4
 
+<img width="676" height="649" alt="image" src="https://github.com/user-attachments/assets/881d7e52-d7be-475e-a77f-fc48ee74cbd6" />
 
-
-- send `my-account` to intruder
+- click `test macro`
+- check and all is good -- we have a loop of: 1) order is placed  -- 2) gift card code is collected -- 3) gift card is redeemed
+- now send `/my-account` request to intruder
 - sniper attack
 - 412 null payloads (* $3) to get $1236 + existing $103 == $1339 total -- just enough to purchase the l33t jacket
-- in resource pool -- set maximum concurrent request to be `1`
+- in resource pool -- set maximum concurrent request to `1`
 
 <img width="1552" height="386" alt="image" src="https://github.com/user-attachments/assets/9ba7785d-3dc4-46f8-9ac0-13fdb80eb8c4" />
-
-
 
 
 
@@ -527,10 +555,15 @@ MACRO
 <img width="1060" height="648" alt="image" src="https://github.com/user-attachments/assets/2c969fbe-7c30-4acf-a902-11ed435d38c9" />
 
 
-- finally lab solved
+
+- go ahead and complete the order for l33t jacket
+- and finally lab solved
 
 <img width="1090" height="411" alt="image" src="https://github.com/user-attachments/assets/49c834f5-4744-411f-95be-01da221bf13a" />
 
+
+
+---
 
 
 
